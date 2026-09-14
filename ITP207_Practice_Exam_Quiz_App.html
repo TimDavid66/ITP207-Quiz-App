@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ITP207 Practice Exam Quiz App</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#1f2937}
+header{background:#111827;color:white;padding:22px 16px;position:sticky;top:0;z-index:5}
+.wrap{max-width:900px;margin:auto}.top{display:flex;justify-content:space-between;gap:15px;align-items:center}
+h1{font-size:22px;margin:0 0 5px}.sub{font-size:13px;opacity:.8}
+#score{font-weight:bold;background:#374151;padding:9px 12px;border-radius:8px}
+nav{background:white;border-bottom:1px solid #ddd;position:sticky;top:82px;z-index:4}
+.tabs{display:flex;overflow:auto;max-width:900px;margin:auto}
+.tabs button{border:0;background:white;padding:13px 15px;cursor:pointer;font-weight:bold}
+.tabs button.active{border-bottom:3px solid #111827}
+main{padding:22px 12px 70px}.section{display:none}.section.active{display:block}
+.card{background:white;border-radius:12px;padding:18px;margin:12px 0;box-shadow:0 2px 8px #0000000d}
+.qnum{font-size:12px;color:#6b7280;font-weight:bold}.question{font-weight:bold;line-height:1.5;margin:7px 0 13px}
+.option{display:block;border:1px solid #d1d5db;border-radius:8px;padding:10px;margin:8px 0;cursor:pointer}
+.option:hover{background:#f9fafb}.option input{margin-right:8px}
+input[type=text]{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+button.action{border:0;border-radius:8px;padding:11px 15px;cursor:pointer;background:#111827;color:white}
+button.secondary{background:#e5e7eb;color:#111827}
+.feedback{margin-top:10px;padding:10px;border-radius:8px;display:none;font-size:14px}
+.correct{background:#dcfce7}.wrong{background:#fee2e2}.key{font-weight:bold}
+.progress{height:8px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:12px 0}.bar{height:100%;background:#111827;width:0}
+.result{font-size:18px;font-weight:bold;margin:15px 0}
+small.note{color:#6b7280}
+@media(max-width:600px){header{position:static}nav{position:static}.top{align-items:flex-start}#score{font-size:12px}}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><div><h1>ITP207 Practice Exam Quiz App</h1><div class="sub">Systems Integration & Architecture — 100 points</div></div><div id="score">Score: 0</div></div></header>
+<nav><div class="tabs">
+<button class="active" onclick="show('mc',this)">Part A — Multiple Choice</button>
+<button onclick="show('fill',this)">Part B — Identification</button>
+<button onclick="show('tf',this)">Part C — True / False</button>
+<button onclick="show('multi',this)">Part D — Multiple Response</button>
+</div></nav>
+<main class="wrap">
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div id="result" class="result"></div>
+<section id="mc" class="section active"></section>
+<section id="fill" class="section"></section>
+<section id="tf" class="section"></section>
+<section id="multi" class="section"></section>
+<div class="actions">
+<button class="action" onclick="checkAll()">Check Answers</button>
+<button class="action secondary" onclick="resetQuiz()">Reset Quiz</button>
+</div>
+<small class="note">Answer key is hidden until you check your answers.</small>
+</main>
+<script>
+const exam = {"mc": [["Which of the following best defines system architecture?", ["A structural design that guides the organization of components, their interactions, and relationships within a system", "A group of interacting or interrelated entities that form a unified whole", "The process of combining different subsystems into a single unified system", "A reporting system that organizes information for mid-level managers"], "A"], ["Which element of system architecture refers to the building blocks that perform specific tasks or provide specific functionalities?", ["Interactions", "Relationships", "Components", "Protocols"], "C"], ["A user submitting a form on a user interface, which triggers a request to a backend server, is an example of which element of system architecture?", ["Component", "Interaction", "Relationship", "Dependency"], "B"], ["In system architecture, when one component relies on the functionality provided by another component, this is called:", ["Association", "Aggregation", "Composition", "Dependency"], "D"], ["Which type of relationship describes components working together without strong dependencies, often for a specific purpose?", ["Dependency", "Association", "Composition", "Aggregation"], "B"], ["Which type of relationship describes components that are tightly integrated, forming a larger whole where the parts are inseparable?", ["Association", "Dependency", "Composition", "Aggregation"], "C"], ["Office suites, graphics editors, and content management systems like WordPress are examples of which architectural style?", ["Microservices Architecture", "Client-Server Architecture", "Monolithic Architecture", "Hub-based Architecture"], "C"], ["An architectural style where a system breaks down into small, independent services that communicate through APIs (as used by Netflix and Amazon) is called:", ["Monolithic Architecture", "Microservices Architecture", "Client-Server Architecture", "Peer-to-Peer Architecture"], "B"], ["A web browser accessing a website hosted on a remote server is a classic example of:", ["Monolithic Architecture", "Microservices Architecture", "Client-Server Architecture", "Composition"], "C"], ["Which of the following is NOT listed as a reason why system architecture matters?", ["Scalability", "Reliability", "Marketing reach", "Maintenance"], "C"], ["Systems integration is best defined as:", ["The process of combining different, often separate, computer systems and software applications into a unified whole", "The structural design guiding the organization of components within a system", "A reporting system for mid-level managers", "A single sign-on policy for application access"], "A"], ["Which of the following is listed as a benefit of systems integration?", ["High setup cost", "Power struggles", "Faster decision-making", "Limited flexibility"], "C"], ["Managers resisting integration because it means losing control of 'their' data is an example of which limitation of systems integration?", ["High setup cost", "Power struggles", "Limited flexibility", "Data duplication"], "B"], ["The functional model that categorizes organizational functions into Planning, Organizing, Staffing, Directing, Coordinating, Reporting, and Budgeting was proposed by:", ["Michael Porter", "Luther Gulick", "Milton Hershey", "Henry Fayol"], "B"], ["Dividing an organization into horizontal departments such as Sales, Distribution, and Finance, where each department stands mostly alone, describes:", ["Vertical silos", "Functional silos", "Microservices", "Middleware"], "B"], ["In the customer order fulfillment example, which department is responsible for checking and approving credit before the order proceeds?", ["Sales department", "Accounting department", "Manufacturing and Production department", "Human Resources department"], "B"], ["Which type of information system records detailed information from every transaction, such as a sale, purchase, or payment?", ["Executive Support System", "Decision Support System", "Transaction Processing System", "Office Automation System"], "C"], ["Which type of information system provides a visual dashboard of strategic information to top-level management in real time?", ["Management Information System", "Executive Support System", "Transaction Processing System", "Office Automation System"], "B"], ["A reporting system that categorizes sales by product for a quarterly period, intended for mid-level managers, is an example of a(n):", ["Decision Support System", "Expert System", "Management Information System", "Transaction Processing System"], "C"], ["Which of the following is an example of physical (technical-level) integration rather than logical (human-level) integration?", ["Training people to share data", "Aligning goals between teams", "Setting access policies", "Using APIs or middleware to connect applications"], "D"], ["Which step in integrating systems involves taking an inventory of hardware and software resources, focusing on vendors and platforms used?", ["Middleware tools", "Resource categorization", "Compliance and standards", "Legacy systems support"], "B"], ["A single sign-on policy for application and data access falls under which step of integrating systems?", ["Centralized IT services and support", "Hardware and software standardization", "Authentication and authorization policies", "Back-up, recovery, and security"], "C"], ["An enterprise resource planning system is best described as:", ["A single-purpose application for payroll only", "An integrated, multi-module application software package designed to serve and support several business functions across an organization", "A tool used only for customer relationship management", "A type of monolithic desktop application"], "B"], ["According to the evolution of enterprise resource planning systems, which stage introduced browser-based software that expanded adoption, scope, and remote functionality?", ["Material requirements planning (1960s–1970s)", "Unified systems (1990s)", "Cloud-based systems (2000s onward)", "Paper and manual scheduling"], "C"], ["Which disadvantage of a disconnected enterprise refers to critical metrics being inaccessible without manual aggregation?", ["Process overload", "Data silos", "Control loss", "Innovation block"], "B"], ["Which enterprise resource planning system tier is described as cloud-based, quick to install, and designed to replace localized spreadsheets?", ["Enterprise tier", "Mid-Market tier", "Small Business tier", "Legacy tier"], "C"], ["In the Cadbury case study, what was the name of the project used to implement the company-wide enterprise resource planning system?", ["Project Vendor Connect", "Project PROBE", "Enterprise 21", "Project Big Bang"], "B"], ["Which company served as Cadbury's best-in-class integration partner for its enterprise resource planning rollout?", ["IBM", "Siebel", "Siemens", "Manugistics"], "C"], ["In Cadbury's five-phase implementation blueprint, which phase involves executing 'Day-in-the-Life' stress tests and end-user training?", ["Project Preparation", "Detailed Design and Requirements", "Master Data Configuration", "Readiness Assessment"], "D"], ["What was the name of the portal through which Cadbury's suppliers gained real-time access to inventory movements?", ["Vendor Connect", "Supplier Hub", "Project PROBE Portal", "Enterprise 21 Dashboard"], "A"]], "fill": [["The building blocks of a system that perform specific tasks or provide specific functionalities are called □.", "Components"], ["A relationship in which components form a larger logical unit, where one component is composed of others that can still exist independently, is called □.", "Aggregation"], ["The architectural style in which the entire application is built as a single unit is called □ architecture.", "Monolithic"], ["The architectural style that divides a system into small, independent services that communicate through application programming interfaces is called □ architecture.", "Microservices"], ["The process of combining different, often separate, computer systems and software applications into a unified whole is called □.", "Systems integration"], ["An organizational structure in which departments stand alone with little or no interaction with other departments is described as □ thinking.", "Silo"], ["The functional model proposed by Luther Gulick that groups organizational functions such as planning, organizing, staffing, directing, coordinating, reporting, and budgeting is commonly referred to by the phrase describing this □ model of organization.", "Functional model of organization (Planning, Organizing, Staffing, Directing, Coordinating, Reporting, and Budgeting)"], ["A group of activities or tasks that are coordinated to achieve a business goal is called a □.", "Business process"], ["The type of information system that records detailed information from every transaction in the major functional areas of an organization is called a □ system.", "Transaction processing"], ["The type of information system that provides a visual dashboard of strategic information to top-level management in real time is called an □ system.", "Executive support"], ["The level of integration that focuses on training people to share data and aligning goals between teams is called □ integration.", "Logical"], ["The level of integration that focuses on using application programming interfaces or middleware to connect applications is called □ integration.", "Physical"], ["Software tools that are essential for short-term integration when existing applications must continue to be used are called □.", "Middleware tools"], ["An integrated, multi-module application software package designed to serve and support several business functions across an organization is called an □ system.", "Enterprise resource planning"], ["The rollout strategy in which all modules of a new system go live at the exact same time is called the □ approach.", "Big Bang"], ["In the Cadbury case study, the name given to the project that implemented a company-wide enterprise resource planning system was □.", "Project PROBE"], ["In the Cadbury case study, the dedicated portal that gave suppliers real-time access to inventory movements was called □.", "Vendor Connect"], ["In the Hershey case study, the overall modernization initiative that combined a resource planning system, a supply chain management system, and a customer relationship management system was named □.", "Enterprise 21"], ["In the Hershey case study, the external, unchangeable deadline that forced an aggressive 30-month implementation timeline was the □ deadline.", "Year 2000 (Y2K)"], ["In the Hershey case study, the executive role that the company initially lacked, which weakened its technology governance, was that of a dedicated □.", "Chief information officer"]], "tf": [["System architecture is primarily concerned only with the internal interfaces among a system's components, and never with the interface between the system and its external environment.", "False"], ["Components can be software modules, hardware devices, subsystems, or even external services.", "True"], ["A dependency relationship means components work together without strong dependencies, often for a specific purpose.", "False"], ["In a composition relationship, the parts are inseparable from the larger whole they form.", "True"], ["Microservices architecture communicates between independent services primarily through application programming interfaces.", "True"], ["Online gaming is typically cited as an example of monolithic architecture.", "False"], ["Systems integration is generally considered a challenge in information systems because it involves heterogeneous systems communicating and sharing data seamlessly.", "True"], ["Cost-efficiency, through reduced human error and redundant data entry, is listed as a benefit of systems integration.", "True"], ["Over-standardization from systems integration can sometimes limit flexibility and innovation.", "True"], ["Vertical silos refer to dividing organizational roles into hierarchical layers, from strategic planning down to day-to-day operations.", "True"], ["In the customer order example, the manufacturing and production department is the first to handle the order before sales or accounting.", "False"], ["A Management Information System is primarily meant to support the strategic decisions of top executives rather than mid-level managers.", "False"], ["Decision Support Systems use mathematical models to assist managers with what-if analysis and trend identification.", "True"], ["Logical integration, at the human level, includes activities like training people to share data and aligning goals between teams.", "True"], ["Physical integration, at the technical level, includes connecting different databases and platforms and upgrading legacy systems.", "True"], ["Developing a single sign-on policy for application and data access is one of the steps in integrating systems.", "True"], ["Enterprise resource planning systems are generally single-function tools designed to serve only one department, such as finance.", "False"], ["According to the evolution of enterprise resource planning systems, intelligent enterprise systems today feature embedded artificial intelligence and predictive agents guiding decisions.", "True"], ["Data duplication, as a disadvantage of a disconnected enterprise, happens when departments rely on segregated applications, leading to duplicate entry and high error rates.", "True"], ["The Small Business tier of enterprise resource planning systems is described as requiring advanced embedded artificial intelligence and hybrid deployment scenarios.", "False"], ["In the Cadbury case study, before Project PROBE, only the finance function shared a common system across the organization.", "True"], ["Cadbury's Project PROBE used a phased, module-by-module rollout strategy rather than a Big Bang approach.", "False"], ["Siemens served as Cadbury's implementation partner, while IBM was tapped for enterprise-grade infrastructure management.", "True"], ["After Project PROBE, Cadbury's business outcomes included 70 percent process automation and zero manpower eliminated, since jobs were reclassified rather than employees fired.", "True"], ["The 2005 UK chocolate oversupply in the Cadbury case was caused by system misalignments and overlooked business process variations.", "True"], ["Hershey's Enterprise 21 initiative involved three vendors: SAP, Manugistics, and Siebel.", "True"], ["Hershey delayed its enterprise resource planning implementation from April to July 1999, which caused it to collide with Halloween and Christmas demand.", "True"], ["Hershey's ERP failure caused no drop in profits and had no long-term brand impact or market share effect.", "False"], ["Hershey's implementation failure was primarily caused by software bugs within the SAP and Siebel programs themselves, rather than by testing, training, and governance issues.", "False"], ["After its initial failure, Hershey hired a dedicated chief information officer and rebuilt its distribution warehouse as part of its comeback.", "True"]], "multi": [["Which of the following are elements of system architecture? (Select all that apply.)", ["Components", "Interactions", "Relationships", "Middleware tools", "Vendor contracts"], ["Components", "Interactions", "Relationships"]], ["Which of the following are types of relationships in system architecture? (Select all that apply.)", ["Dependency", "Association", "Aggregation", "Composition", "Delegation"], ["Dependency", "Association", "Aggregation", "Composition"]], ["Which of the following are steps in integrating systems, as discussed in the Systems Integration lecture? (Select all that apply.)", ["Resource categorization", "Legacy systems support", "Centralized IT services and support", "Middleware tools", "Authentication and authorization policies", "Hiring a chief financial officer"], ["Resource categorization", "Legacy systems support", "Centralized IT services and support", "Middleware tools", "Authentication and authorization policies"]], ["Which of the following are disadvantages of a disconnected enterprise? (Select all that apply.)", ["Process overload", "Data silos", "Control loss", "Data duplication", "Increased vendor competition"], ["Process overload", "Data silos", "Control loss", "Data duplication"]], ["Which of the following were among Hershey's Enterprise 21 vendors and/or contributing causes of its 1999 implementation failure? (Select all that apply.)", ["SAP", "Manugistics", "Siebel", "Minimal user acceptance testing", "A phased, module-by-module rollout"], ["SAP", "Manugistics", "Siebel", "Minimal user acceptance testing"]]]};
+let points=0, checked=false;
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function show(id,btn){
+ document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');
+}
+function renderMC(){
+ const el=document.getElementById('mc');
+ el.innerHTML='<h2>Part A: Multiple Choice (30 points)</h2><p>Choose the letter of the best answer.</p>'+
+ exam.mc.map((q,i)=>`<div class="card"><div class="qnum">${i+1} / 30</div><div class="question">${esc(q[0])}</div>`+
+ q[1].map((o,j)=>`<label class="option"><input type="radio" name="mc${i}" value="${String.fromCharCode(65+j)}">${String.fromCharCode(65+j)}. ${esc(o)}</label>`).join('')+
+ `<div class="feedback" id="fmc${i}"></div></div>`).join('');
+}
+function renderFill(){
+ const el=document.getElementById('fill');
+ el.innerHTML='<h2>Part B: Identification / Fill in the Blanks (20 points)</h2><p>Fill in the blank. Do not use acronyms — write out full terms.</p>'+
+ exam.fill.map((q,i)=>`<div class="card"><div class="qnum">${i+1} / 20</div><div class="question">${esc(q[0])}</div><input type="text" id="fill${i}" autocomplete="off"><div class="feedback" id="ffill${i}"></div></div>`).join('');
+}
+function renderTF(){
+ const el=document.getElementById('tf');
+ el.innerHTML='<h2>Part C: True or False (30 points)</h2><p>Write TRUE if correct, or FALSE if incorrect.</p>'+
+ exam.tf.map((q,i)=>`<div class="card"><div class="qnum">${i+1} / 30</div><div class="question">${esc(q[0])}</div>`+
+ ['True','False'].map(v=>`<label class="option"><input type="radio" name="tf${i}" value="${v}">${v}</label>`).join('')+
+ `<div class="feedback" id="ftf${i}"></div></div>`).join('');
+}
+function renderMulti(){
+ const el=document.getElementById('multi');
+ el.innerHTML='<h2>Part D: Multiple Response (20 points)</h2><p>Select ALL choices that apply. Each correct selection is worth 1 point.</p>'+
+ exam.multi.map((q,i)=>`<div class="card"><div class="qnum">${i+1} / 5</div><div class="question">${esc(q[0])}</div>`+
+ q[1].map((o,j)=>`<label class="option"><input type="checkbox" name="multi${i}" value="${esc(o)}">${String.fromCharCode(65+j)}. ${esc(o)}</label>`).join('')+
+ `<div class="feedback" id="fmulti${i}"></div></div>`).join('');
+}
+function normalize(s){return s.toLowerCase().replace(/[.,'’"]/g,'').replace(/\s+/g,' ').trim();}
+function feedback(id,msg,ok){
+ const e=document.getElementById(id);e.style.display='block';e.className='feedback '+(ok?'correct':'wrong');e.innerHTML=msg;
+}
+function checkAll(){
+ points=0;
+ exam.mc.forEach((q,i)=>{
+  const a=document.querySelector(`input[name="mc${i}"]:checked`)?.value;
+  const ok=a===q[2]; if(ok)points++;
+  feedback('fmc'+i, ok?'Correct.':'Not correct. Correct answer: <span class="key">'+q[2]+'</span>.',ok);
+ });
+ exam.fill.forEach((q,i)=>{
+  const a=normalize(document.getElementById('fill'+i).value), ok=a===normalize(q[1]);
+  if(ok)points++;
+  feedback('ffill'+i,ok?'Correct.':'Not correct. Correct answer: <span class="key">'+esc(q[1])+'</span>.',ok);
+ });
+ exam.tf.forEach((q,i)=>{
+  const a=document.querySelector(`input[name="tf${i}"]:checked`)?.value, ok=a===q[1];
+  if(ok)points++;
+  feedback('ftf'+i,ok?'Correct.':'Not correct. Correct answer: <span class="key">'+q[1]+'</span>.',ok);
+ });
+ exam.multi.forEach((q,i)=>{
+  const selected=[...document.querySelectorAll(`input[name="multi${i}"]:checked`)].map(x=>x.value).sort();
+  const answer=[...q[2]].sort();
+  const ok=JSON.stringify(selected)===JSON.stringify(answer);
+  if(ok)points+=q[2].length; // each correct selection is 1 point
+  feedback('fmulti'+i,ok?'Correct.':'Not correct. Correct selections: <span class="key">'+q[2].map(x=>esc(x)).join(', ')+'</span>.',ok);
+ });
+ document.getElementById('score').textContent='Score: '+points+' / 100';
+ document.getElementById('result').textContent='Your score: '+points+' / 100';
+ document.getElementById('bar').style.width=points+'%';
+ checked=true; window.scrollTo({top:0,behavior:'smooth'});
+}
+function resetQuiz(){location.reload();}
+renderMC();renderFill();renderTF();renderMulti();
+</script>
+</body></html>
